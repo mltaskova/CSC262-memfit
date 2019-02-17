@@ -9,22 +9,24 @@
 typedef struct {
   size_t size;
   char name[NAME_LEN+1];
-} Block_t;
+} Block;
 
 typedef struct {
   size_t size;
   size_t capacity;
-  Block_t** array;
-} BlockList_t;
+  Block** array;
+} BlockList;
 
-void block_init(Block_t* b, const char* name, size_t size);
-Block_t* block_new(const char* name, size_t size);
+// Block methods
+void block_init(Block* b, const char* name, size_t size);
+Block* block_new(const char* name, size_t size);
 
-void list_init(BlockList_t* list);
-void list_free(BlockList_t* list);
-void list_push(BlockList_t* list, Block_t *block);
-ssize_t list_find(BlockList_t* list, char* name);
-Block_t* list_get(BlockList_t* list, size_t i);
-Block_t* list_remove(BlockList_t* list, size_t i);
+// BlockList methods.
+void list_init(BlockList* list);
+void list_free(BlockList* list);
+void list_push(BlockList* list, Block *block);
+ssize_t list_find(BlockList* list, char* name);
+Block* list_get(BlockList* list, size_t i);
+Block* list_remove(BlockList* list, size_t i);
 
 #endif // __BLOCK_H

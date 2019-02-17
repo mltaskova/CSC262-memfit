@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     }
     assert(input != NULL);
 
-    Simulation_t sim;
+    Simulation sim;
     simulation_init(&sim);
 
     // Static buffers for the line, the command and the name of the memory block.
