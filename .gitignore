@@ -1,0 +1,8 @@
+*.o
+*.json
+*.a
+*.lib
+*.dll
+memfit
+*~
+block_test
