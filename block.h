@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define NAME_LEN 24
 
@@ -28,5 +29,7 @@ void list_push(BlockList* list, Block *block);
 ssize_t list_find(BlockList* list, char* name);
 Block* list_get(BlockList* list, size_t i);
 Block* list_remove(BlockList* list, size_t i);
+void list_sort(BlockList* list, bool increasing);
+
 
 #endif // __BLOCK_H

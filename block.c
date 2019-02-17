@@ -3,6 +3,21 @@
 #include <string.h>
 #include <assert.h>
 
+// For qsort.
+static int by_size_increasing(const void* block_lhs, const void* block_rhs) {
+    Block* lhs = (Block*) block_lhs;
+    Block* rhs = (Block*) block_rhs;
+    assert(lhs != NULL);
+    assert(rhs != NULL);
+
+    return rhs->size - lhs->size;
+}
+
+// For qsort.
+static int by_size_decreasing(const void* block_lhs, const void* block_rhs) {
+    return by_size_increasing(block_rhs, block_lhs);
+}
+
 static size_t max(size_t a, size_t b) {
     return (a > b) ? a : b;
 }
@@ -84,3 +99,10 @@ Block* list_remove(BlockList* list, size_t i) {
     return retv;
 }
 
+void list_sort(BlockList* list, bool increasing) {
+    if (increasing) {
+        qsort(list->array, list->size, sizeof(Block*), &by_size_increasing);
+    } else {
+        qsort(list->array, list->size, sizeof(Block*), &by_size_decreasing);
+    }
+}
