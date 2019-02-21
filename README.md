@@ -14,9 +14,9 @@ free B
 
 The input file contains a sequence of lines with one of three commands on them:
 
--	pool ALGORITHM SIZE
--	alloc NAME SIZE
--	free NAME
+-	``pool ALGORITHM SIZE``
+-	``alloc NAME SIZE``
+-	``free NAME``
 
 ``ALGORITHM`` is one of "first", "best", "worst", "next" or "random".
 
@@ -54,3 +54,44 @@ The input file contains a sequence of lines with one of three commands on them:
 - Figure out how to make Best or Worst fit use a heap.
 - Figure out how to measure fragmentation. Is there a single number you could use to represent how fragmented your simulator is?
 
+## Architecture Hints (Java)
+
+```java
+// I’d want a simulation class to do most of the work.
+class Simulation {
+  String algorithm;
+  List<Block> free_list;
+  List<Block> used_list;
+   
+  // Strongly recommend you start with printing out the pieces.
+  void print();
+  Block alloc(String name, int size) { /* #4,#5,#6 on worksheet */ }
+  private Block alloc_first(String name, int size);
+  …
+  void free(String name);
+  private void splitBlock(Block b, String newName, int size) { /* #1 on worksheet */ }
+  private void compactFreeList() { /* #3 on worksheet */ }
+  public static void main(String[] args) { /* #9 on worksheet (modified) */ }
+}
+
+// I’d want a block class with at least these fields and methods.
+class Block {
+  String name;
+  int offset;
+  int size;
+  public String toString(); // highly recommended
+  public boolean is_adjacent(Block other) { /* #2 on worksheet*/  }
+}
+
+// Sort-by in Java: (needs a class)
+class ByOffset implements Comparator<Block> {
+  @Override int compare(Block lhs, Block rhs) {
+    return Integer.compare(lhs.offset, rhs.offset);
+  }
+}
+
+static void exampleSort(List<Block> blocks) {
+    Collections.sort(blocks, new ByOffset());
+}
+
+```
