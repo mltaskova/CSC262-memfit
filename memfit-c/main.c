@@ -63,16 +63,16 @@ int main(int argc, char *argv[]) {
         // Handle our 3 commands:
         if (strcmp("pool", cmd) == 0) {
             int amt = 0;
-            if (2 != sscanf(buffer, "%s %d", cmd, &amt)) {
+            if (2 != sscanf(buffer, "%s %s %d", cmd, name, &amt)) {
                 fprintf(stderr, "Bad pool command: <\n\t%s\n>\n", buffer);
                 return -4;
             }
-            printf("pool(%d)\n", amt);
+            printf("pool(%s, %d)\n", name, amt);
             if (amt < 0) {
                 fprintf(stderr, "pool: can only allocate positive memory!\n");
                 return -5;
             }
-            simulation_start(&sim, amt);
+            simulation_start(&sim, name, amt);
         } else if (strcmp("alloc", cmd) == 0) {
             int amt = 0;
             if (3 != sscanf(buffer, "%s %s %d", cmd, name, &amt)) {

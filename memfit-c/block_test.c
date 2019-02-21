@@ -1,5 +1,6 @@
 #include "block.h"
 #include <assert.h>
+#include <stdio.h>
 
 void test_simple(void) {
     BlockList test_list;

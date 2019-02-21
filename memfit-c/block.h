@@ -8,6 +8,7 @@
 #define NAME_LEN 24
 
 typedef struct {
+  size_t offset;
   size_t size;
   char name[NAME_LEN+1];
 } Block;
@@ -26,7 +27,7 @@ Block* block_new(const char* name, size_t size);
 void list_init(BlockList* list);
 void list_free(BlockList* list);
 void list_push(BlockList* list, Block *block);
-ssize_t list_find(BlockList* list, char* name);
+ssize_t list_find(BlockList* list, const char* name);
 Block* list_get(BlockList* list, size_t i);
 Block* list_remove(BlockList* list, size_t i);
 void list_sort(BlockList* list, bool increasing);

@@ -3,7 +3,7 @@ CC:=clang
 CFLAGS:=-Wall -Werror -Wextra -std=c99 -Wshadow -Wno-unused-parameter -Wno-unused-variable -g
 LFLAGS:=-lm
 PROGRAM:=memfit
-DEBUGGER:=lldb
+DEBUGGER:=gdb
 
 %.o: %.c
 	${CC} -c $^ -o $@ ${CFLAGS}
@@ -21,8 +21,8 @@ clean:
 .PHONY: test
 test: ${PROGRAM} block_test
 	./block_test
-	./${PROGRAM} input.txt
+	./${PROGRAM} ../input.txt
 
 .PHONY: debug
 debug: ${PROGRAM}
-	${DEBUGGER} ${PROGRAM} -ex 'run input.txt' || stty sane
+	${DEBUGGER} ${PROGRAM} -ex 'run ../input.txt' || stty sane

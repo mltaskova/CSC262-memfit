@@ -1,23 +1,25 @@
 #include "block.h"
 
 #include <string.h>
+#include <stdio.h>
 #include <assert.h>
 
 // For qsort.
-static int by_size_increasing(const void* block_lhs, const void* block_rhs) {
-    Block* lhs = (Block*) block_lhs;
-    Block* rhs = (Block*) block_rhs;
+int by_size_increasing(const void* block_lhs, const void* block_rhs) {
+    Block* lhs = *((Block**) block_lhs);
+    Block* rhs = *((Block**) block_rhs);
     assert(lhs != NULL);
     assert(rhs != NULL);
 
-    return rhs->size - lhs->size;
+    return (int) lhs->size - (int) rhs->size;
 }
 
 // For qsort.
-static int by_size_decreasing(const void* block_lhs, const void* block_rhs) {
+int by_size_decreasing(const void* block_lhs, const void* block_rhs) {
     return by_size_increasing(block_rhs, block_lhs);
 }
 
+// for resizing.
 static size_t max(size_t a, size_t b) {
     return (a > b) ? a : b;
 }
@@ -73,7 +75,7 @@ void list_push(BlockList* list, Block *block) {
     list->array[list->size++] = block;
 }
 
-ssize_t list_find(BlockList* list, char* name) {
+ssize_t list_find(BlockList* list, const char* name) {
     for (size_t i=0; i<list->size; i++) {
         if (strcmp(list->array[i]->name, name) == 0) {
             return i;
@@ -101,8 +103,8 @@ Block* list_remove(BlockList* list, size_t i) {
 
 void list_sort(BlockList* list, bool increasing) {
     if (increasing) {
-        qsort(list->array, list->size, sizeof(Block*), &by_size_increasing);
+        qsort(&list->array[0], list->size, sizeof(void*), &by_size_increasing);
     } else {
-        qsort(list->array, list->size, sizeof(Block*), &by_size_decreasing);
+        qsort(&list->array[0], list->size, sizeof(void*), &by_size_decreasing);
     }
 }
