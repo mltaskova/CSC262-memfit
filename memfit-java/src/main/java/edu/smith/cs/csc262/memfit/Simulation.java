@@ -56,12 +56,16 @@ public class Simulation {
   // Strongly recommend you start with printing out the pieces.
   private void print(){
       double ratio = 0.00;
+      int maxSize = 0;
       Collections.sort(this.free_list, new ByOffset());
       for (Block b:this.free_list){
           ratio += (double) b.getSize();
+          if (b.getSize() > maxSize)
+              maxSize = b.getSize();
           System.out.println(b.toString() + " offset: "+ b.getOffset()+ " size: " + b.getSize());
       }
       System.out.println("free: " + (ratio/(double) this.totalSize)*100.00 + "%");
+      System.out.println("fragmentation: " + ((ratio - (double) maxSize)/ratio)*100.00 + "%");
       ratio = 0.00;
       Collections.sort(this.used_list, new ByOffset());
       for (Block b:this.used_list){
