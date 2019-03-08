@@ -122,14 +122,17 @@ void list_sort_by_offset(BlockList* list){
     qsort(&list->array[0], list->size, sizeof(void*), &by_offset_increasing);
 }
 
-void list_print(BlockList* list){
+size_t list_print(BlockList* list){
     assert(list != NULL);
     size_t i;
+    size_t sum = 0;
     Block* temp;
     for (i = 0; i < list->size; i++){
         temp = list_get(list, i);
         printf("%s offset %zu size %zu \n",temp->name, temp->offset, temp->size );
+        sum+= temp->size;
     }
+    return sum;
 }
 
 

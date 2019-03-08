@@ -31,7 +31,7 @@ ssize_t list_find(BlockList* list, const char* name);
 Block* list_get(BlockList* list, size_t i);
 Block* list_remove(BlockList* list, size_t i);
 void list_sort(BlockList* list, bool increasing);
-void list_print(BlockList* list);
+size_t list_print(BlockList* list);
 void list_sort_by_offset(BlockList* list);
 
 

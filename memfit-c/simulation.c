@@ -18,12 +18,13 @@ void simulation_start(Simulation *sim, const char* strategy, size_t pool) {
 }
 
 void result_print(Simulation *sim){
+    size_t sum;
     list_sort_by_offset(&sim->free_list);
     list_sort_by_offset(&sim->used_list);
-    printf("free: \n");
-    list_print(&sim->free_list);
-    printf("used: \n");
-    list_print(&sim->used_list);
+    sum = list_print(&sim->free_list);
+    printf("free: %zd\n", sum/sim->pool_size);
+    sum = list_print(&sim->used_list);
+    printf("used: %zd\n", sum/sim->pool_size);
 }
 
 void simulation_alloc(Simulation *sim, const char* name, size_t amount) {
@@ -31,6 +32,7 @@ void simulation_alloc(Simulation *sim, const char* name, size_t amount) {
     list_sort(&sim->free_list, true);
     Block* temp;
     Block* split_block;
+    bool success = false;
     size_t i;
     size_t new_offset = 0;
     for (i = 0; i < sim->free_list.size ; i++){
@@ -40,6 +42,7 @@ void simulation_alloc(Simulation *sim, const char* name, size_t amount) {
             split_block->offset = temp->offset;
             list_remove(&sim->free_list, i);
             list_push(&sim->used_list, split_block);
+            success = true;
             break;
         }
         else if (temp->size > amount){
@@ -48,8 +51,12 @@ void simulation_alloc(Simulation *sim, const char* name, size_t amount) {
             list_push(&sim->used_list, split_block);
             temp->size -= amount;
             temp->offset += amount;
+            success = true;
             break;
         }
+    }
+    if (!success){
+        printf("could not alloc %s\n", name);
     }
 }
 
