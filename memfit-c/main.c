@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
         // Handle our 3 commands:
         if (strcmp("pool", cmd) == 0) {
             int amt = 0;
-            if (2 != sscanf(buffer, "%s %s %d", cmd, name, &amt)) {
+            if (3 != sscanf(buffer, "%s %s %d", cmd, name, &amt)) {
                 fprintf(stderr, "Bad pool command: <\n\t%s\n>\n", buffer);
                 return -4;
             }
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
             return -9;
         }
     }
-
+    result_print(&sim);
     fclose(input);
 
     return 0;

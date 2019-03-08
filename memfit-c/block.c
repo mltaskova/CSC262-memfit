@@ -4,6 +4,15 @@
 #include <stdio.h>
 #include <assert.h>
 
+int by_offset_increasing(const void* block_lhs, const void* block_rhs){
+    Block* lhs = *((Block**) block_lhs);
+    Block* rhs = *((Block**) block_rhs);
+    assert(lhs != NULL);
+    assert(rhs != NULL);
+
+    return (int) lhs->offset - (int) rhs->offset;
+}
+
 // For qsort.
 int by_size_increasing(const void* block_lhs, const void* block_rhs) {
     Block* lhs = *((Block**) block_lhs);
@@ -57,7 +66,7 @@ void list_free(BlockList* list) {
         list->capacity = 0;
     }
 }
-
+// making more room if list is too small
 void list_grow(BlockList* list) {
     assert(list != NULL);
     Block** data = list->array;
@@ -65,8 +74,8 @@ void list_grow(BlockList* list) {
     list->capacity = new_capacity;
     list->array = realloc(data, sizeof(Block*)*new_capacity);
 }
-
-void list_push(BlockList* list, Block *block) {
+// adding block to list
+void list_push(BlockList* list, Block* block) {
     assert(list != NULL);
     if (list->size >= list->capacity) {
         list_grow(list);
@@ -74,7 +83,7 @@ void list_push(BlockList* list, Block *block) {
     assert(list->size <= list->capacity);
     list->array[list->size++] = block;
 }
-
+// find block in list by name
 ssize_t list_find(BlockList* list, const char* name) {
     for (size_t i=0; i<list->size; i++) {
         if (strcmp(list->array[i]->name, name) == 0) {
@@ -83,12 +92,12 @@ ssize_t list_find(BlockList* list, const char* name) {
     }
     return -1;
 }
-
+// get block at index i
 Block* list_get(BlockList* list, size_t i) {
     assert(i <= list->size);
     return list->array[i];
 }
-
+// remove block at index
 Block* list_remove(BlockList* list, size_t i) {
     assert(i <= list->size);
 
@@ -103,8 +112,30 @@ Block* list_remove(BlockList* list, size_t i) {
 
 void list_sort(BlockList* list, bool increasing) {
     if (increasing) {
-        qsort(&list->array[0], list->size, sizeof(void*), &by_size_increasing);
+        qsort(&list->array[0], list->size, sizeof(void*), &by_offset_increasing);
     } else {
         qsort(&list->array[0], list->size, sizeof(void*), &by_size_decreasing);
     }
 }
+
+void list_print(BlockList* list){
+    assert(list != NULL);
+    size_t i;
+    Block* temp;
+    for (i = 0; i < list->size; i++){
+        temp = list_get(list, i);
+        printf("%s offset %zu size %zu \n",temp->name, temp->offset, temp->size );
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
