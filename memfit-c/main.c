@@ -97,6 +97,7 @@ int main(int argc, char *argv[]) {
             return -9;
         }
     }
+    printf("\n");
     result_print(&sim);
     fclose(input);
 

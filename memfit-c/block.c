@@ -112,10 +112,14 @@ Block* list_remove(BlockList* list, size_t i) {
 
 void list_sort(BlockList* list, bool increasing) {
     if (increasing) {
-        qsort(&list->array[0], list->size, sizeof(void*), &by_offset_increasing);
+        qsort(&list->array[0], list->size, sizeof(void*), &by_size_increasing);
     } else {
         qsort(&list->array[0], list->size, sizeof(void*), &by_size_decreasing);
     }
+}
+
+void list_sort_by_offset(BlockList* list){
+    qsort(&list->array[0], list->size, sizeof(void*), &by_offset_increasing);
 }
 
 void list_print(BlockList* list){
