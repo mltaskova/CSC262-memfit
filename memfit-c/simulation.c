@@ -4,6 +4,7 @@
 
 int failed_alloc = 0;
 char method[25];
+Block* block_last = NULL;
 
 void simulation_init(Simulation *sim) {
     list_init(&sim->free_list);
@@ -33,20 +34,7 @@ void result_print(Simulation *sim){
     printf("failed alloc %d times\n", failed_alloc);
 }
 
-void simulation_alloc(Simulation *sim, const char* name, size_t amount) {
-    assert(sim != NULL);
-    if (strncmp(method, "best", 4) == 0){
-        list_sort(&sim->free_list, true); 
-    }
-    else if (strncmp(method, "worst", 4) == 0) {
-        list_sort(&sim->free_list, false);
-    }
-    else if (strncmp(method, "first", 4) == 0) {
-        list_sort_by_offset(&sim->free_list);
-    }
-    else if (strncmp(method, "random", 4) == 0){
-        list_shuffle(&sim->free_list);
-    }
+void general_alloc(Simulation *sim, const char* name, size_t amount){
     Block* temp;
     Block* split_block;
     bool success = false;
@@ -59,6 +47,7 @@ void simulation_alloc(Simulation *sim, const char* name, size_t amount) {
             split_block->offset = temp->offset;
             list_remove(&sim->free_list, i);
             list_push(&sim->used_list, split_block);
+            block_last = split_block;
             success = true;
             break;
         }
@@ -68,6 +57,7 @@ void simulation_alloc(Simulation *sim, const char* name, size_t amount) {
             list_push(&sim->used_list, split_block);
             temp->size -= amount;
             temp->offset += amount;
+            block_last = split_block;
             success = true;
             break;
         }
@@ -75,6 +65,30 @@ void simulation_alloc(Simulation *sim, const char* name, size_t amount) {
     if (!success){
         // printf("could not alloc %s\n", name);
         failed_alloc++;
+    }
+}
+
+void simulation_alloc(Simulation *sim, const char* name, size_t amount) {
+    assert(sim != NULL);
+    if (strncmp(method, "best", 4) == 0){
+        list_sort(&sim->free_list, true);
+        general_alloc(sim, name, amount); 
+    }
+    else if (strncmp(method, "worst", 4) == 0) {
+        list_sort(&sim->free_list, false);
+        general_alloc(sim, name, amount);
+    }
+    else if (strncmp(method, "first", 4) == 0) {
+        list_sort_by_offset(&sim->free_list);
+        general_alloc(sim, name, amount);
+    }
+    else if (strncmp(method, "random", 4) == 0){
+        list_shuffle(&sim->free_list);
+        general_alloc(sim, name, amount);
+    }
+    else{
+        printf("we don't support this method sorry :(\n");
+        exit(-1);
     }
 }
 
