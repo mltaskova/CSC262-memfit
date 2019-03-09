@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Bad pool command: <\n\t%s\n>\n", buffer);
                 return -4;
             }
-            printf("pool(%s, %d)\n", name, amt);
+            // printf("pool(%s, %d)\n", name, amt);
             if (amt < 0) {
                 fprintf(stderr, "pool: can only allocate positive memory!\n");
                 return -5;
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Bad alloc command: <\n\t%s\n>\n", buffer);
                 return -6;
             }
-            printf("%s = alloc(%d)\n", name, amt);
+            // printf("%s = alloc(%d)\n", name, amt);
             if (amt < 0) {
                 fprintf(stderr, "alloc: can only allocate positive memory!\n");
                 return -7;
@@ -90,14 +90,13 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Bad free command: <\n\t%s\n>\n", buffer);
                 return -8;
             }
-            printf("free(%s)\n", name);
+            // printf("free(%s)\n", name);
             simulation_free(&sim, name);
         } else {
             fprintf(stderr, "Unknown command: <\n\t%s\n>\n", buffer);
             return -9;
         }
     }
-    printf("\n");
     result_print(&sim);
     fclose(input);
 

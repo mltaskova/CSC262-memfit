@@ -33,6 +33,10 @@ static size_t max(size_t a, size_t b) {
     return (a > b) ? a : b;
 }
 
+static size_t min(size_t a, size_t b){
+    return (a<b) ? a:b;
+}
+
 void block_init(Block* b, const char* name, size_t size) {
     memset(b->name, 0, NAME_LEN+1);
     b->size = size;
@@ -51,6 +55,14 @@ Block* block_new(const char* name, size_t size) {
     return b;
 }
 
+bool block_meets(Block* b1, Block* b2){
+    if (b1->offset < b2->offset){
+        return b1->offset + b1->size == b2->offset;
+    }
+    else{
+        return b2->offset + b2->size == b1->offset;
+    }
+}
 
 void list_init(BlockList* list) {
     list->array = NULL;
@@ -118,8 +130,49 @@ void list_sort(BlockList* list, bool increasing) {
     }
 }
 
+void list_shuffle(BlockList* list){
+    size_t i;
+    size_t j;
+    Block* temp;
+    for (i =0; i < list->size; i++){
+        j = (size_t)((double)rand()/(RAND_MAX/list->size));
+        temp = list_get(list, i);
+        list->array[i] = list->array[j];
+        list->array[j] = temp;
+    }
+}
+
 void list_sort_by_offset(BlockList* list){
     qsort(&list->array[0], list->size, sizeof(void*), &by_offset_increasing);
+}
+
+BlockList* list_merge(BlockList* list){
+    list_sort_by_offset(list);
+    size_t i;
+    BlockList *keep_list = (BlockList*) malloc(sizeof(BlockList));
+    list_init(keep_list);
+    Block* temp = block_new("", 0);
+    temp->offset = 0;
+    size_t temp_offset = 0;
+    Block* iter;
+    for (i =0; i<list->size; i++){
+        iter = list_get(list, i);
+        if (block_meets(temp, iter)){
+            temp_offset = temp->offset;
+            temp = block_new(iter->name, temp->size + iter->size);
+            temp->offset = min(temp_offset, iter->offset);
+        }
+        else{
+            if (temp->size > 0){
+                list_push(keep_list, temp);
+            }
+            temp = iter;
+        }
+    }
+    if (temp->size > 0){
+        list_push(keep_list, temp);
+    }
+    return keep_list;
 }
 
 size_t list_print(BlockList* list){
